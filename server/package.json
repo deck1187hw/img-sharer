@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "connect-busboy": "^1.0.0",
+    "cors": "^2.8.5",
     "express": "^4.17.2",
     "fs-extra": "^10.0.0",
     "loglevel": "^1.8.0",

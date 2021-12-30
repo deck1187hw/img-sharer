@@ -3,10 +3,25 @@ const busboy = require('connect-busboy');   // Middleware to handle the file upl
 const path = require('path');               // Used for manipulation with path
 const fs = require('fs-extra');             // Classic fs
 const logger = require('loglevel');
+const cors = require('cors');
 const AssetService = require('./services/asset-service');
 const app = express();
 app.use(busboy({
     highWaterMark: 2 * 1024 * 1024, // Set 2MiB buffer
+}));
+
+var allowedOrigins = ['http://localhost:8080',
+    'http://yourapp.com'];
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    }
 }));
 
 const assetService = new AssetService({ logger });
@@ -22,9 +37,10 @@ app.route('/upload').post((req, res, next) => {
     req.busboy.on('file', (fieldname, file, fileObj) => {
 
         const fileName = fileObj.filename;
-
+        const randomId = assetService.makeId(8);
+        const extension = assetService.getExtension(fileName);
         // Create a write stream of the new file
-        const fstream = fs.createWriteStream(path.join(uploadPath, `${assetService.makeId(8)}.${assetService.getExtension(fileName)}`));
+        const fstream = fs.createWriteStream(path.join(uploadPath, `${randomId}.${extension}`));
 
         // Pipe it trough
         file.pipe(fstream);
@@ -32,7 +48,10 @@ app.route('/upload').post((req, res, next) => {
         // On finish of the upload
         fstream.on('close', () => {
             console.log(`Upload of '${file}' finished`);
-            res.redirect('back');
+            res.json([{
+                id: `${randomId}.${extension}`,
+            }]);
+
         });
     });
 });
