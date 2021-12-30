@@ -1,0 +1,26 @@
+{
+  "name": "img-sharer",
+  "version": "1.0.0",
+  "description": "Share images online and store them on your own server",
+  "main": "index.js",
+  "dependencies": {
+    "connect-busboy": "^1.0.0",
+    "express": "^4.17.2",
+    "fs-extra": "^10.0.0",
+    "loglevel": "^1.8.0",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "Image",
+    "sharer"
+  ],
+  "author": "Miguel Puig",
+  "license": "ISC"
+}
